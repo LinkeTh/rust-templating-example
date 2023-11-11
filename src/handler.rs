@@ -2,13 +2,11 @@ use crate::error::{AppError, ErrorTemplate};
 use crate::{db, Book};
 use askama::Template;
 use axum::extract::{Path, State};
-// use axum::response::Redirect;
 use axum::Form;
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use uuid::Uuid;
-
 // use axum::debug_handler;
 
 #[derive(Template)]
@@ -34,26 +32,10 @@ pub struct BookRequest {
     pub pages: i32,
 }
 
-// #[derive(Template, Deserialize, Debug)]
-// #[template(path = "welcome.html")]
-// pub struct WelcomeTemplate {
-//     title: String,
-//     body: String,
-// }
-
 #[derive(Template, Deserialize, Debug)]
 #[template(path = "template.html")]
 pub struct BaseTemplate {}
 
-// #[debug_handler]
-// pub async fn welcome_handler(State(db_pool): State<PgPool>) -> Result<WelcomeTemplate, AppError> {
-//     db::test_db(db_pool.clone()).await?;
-//
-//     Ok(WelcomeTemplate {
-//         title: String::from("Welcome"),
-//         body: String::from("To The Bookstore!"),
-//     })
-// }
 pub async fn welcome_handler(State(db_pool): State<PgPool>) -> Result<BaseTemplate, AppError> {
     db::test_db(db_pool.clone()).await?;
 
@@ -65,7 +47,7 @@ pub async fn books_list_handler(
 ) -> Result<BookListTemplate, AppError> {
     let books = db::find_books(db_pool.clone()).await?;
 
-    Ok(BookListTemplate { books })
+    Ok(BookListTemplate { books: books })
 }
 // #[debug_handler]
 pub async fn handler_404() -> Result<ErrorTemplate, AppError> {
@@ -79,7 +61,6 @@ pub async fn delete_book_handler(
     Path(book_id): Path<String>,
     State(db_pool): State<PgPool>,
 ) -> Result<(), AppError> {
-    // ) -> Result<BookListTemplate, AppError> {
     let result = db::delete_book(&book_id, db_pool.clone()).await;
 
     match result {
@@ -91,8 +72,6 @@ pub async fn delete_book_handler(
         }
     }
 
-    // books_list_handler(State(db_pool)).await
-    // Redirect::to("/books/list")
     Ok(())
 }
 
@@ -116,7 +95,6 @@ pub async fn do_edit_book_handler(
     Path(book_id): Path<String>,
     State(db_pool): State<PgPool>,
     Form(body): Form<BookRequest>,
-    // ) -> Redirect {
 ) -> Result<BookListTemplate, AppError> {
     let result = db::update_book(&book_id, db_pool.clone(), body).await;
 
@@ -129,7 +107,6 @@ pub async fn do_edit_book_handler(
         }
     }
 
-    // Redirect::to("/books/list")
     books_list_handler(State(db_pool)).await
 }
 
@@ -137,7 +114,6 @@ pub async fn do_edit_book_handler(
 pub async fn create_book_handler(
     State(db_pool): State<PgPool>,
     Form(body): Form<BookRequest>,
-    // ) -> Redirect {
 ) -> Result<BookListTemplate, AppError> {
     let new_book = Book {
         id: Uuid::new_v4().to_string(),
@@ -159,5 +135,4 @@ pub async fn create_book_handler(
         }
     }
     books_list_handler(State(db_pool)).await
-    // Redirect::to("/books/list")
 }

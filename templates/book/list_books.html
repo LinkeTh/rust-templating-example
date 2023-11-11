@@ -16,19 +16,22 @@
     <tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
     {% for book in books %}
     <tr>
+        <script>
+            document.getElementById('added_at_{{book.id}}').innerText = new Date('{{ book.added_at.to_rfc3339() }}').toLocaleString();
+        </script>
         <td>{{ book.id }}</td>
         <td>{{ book.name }}</td>
         <td>{{ book.author }}</td>
         <td>{{ book.language }}</td>
         <td>{{ book.pages }}</td>
-        <td>{{ book.added_at }}</td>
+        <td id="added_at_{{book.id}}">{{ book.added_at.format("%a %b %e %T %Y") }}</td>
         <td>
-            <button hx-get="{{"/books/edit/{}"|format(book.id)}}" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">edit</button>
+            <button hx-get="/books/edit/{{book.id}}" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">edit</button>
         </td>
         <td>
-            <button hx-confirm="Are you sure?" hx-delete="{{"/books/delete/{}"|format(book.id)}}">delete</button>
+            <button hx-confirm="Are you sure?" hx-delete="/books/delete/{{book.id}}">delete</button>
         </td>
-    <?tr>
+    </tr>
     {% endfor %}
     </tbody>
 </table>
