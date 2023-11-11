@@ -1,4 +1,5 @@
 use anyhow::Context;
+use axum::routing::{delete, put};
 use axum::{routing::get, routing::post, Router};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
@@ -48,8 +49,11 @@ fn build_book_routes_with_db(db_pool: DBPool) -> Router {
     Router::new()
         .route("/books/new", post(handler::create_book_handler))
         .route("/books/edit/:book_id", get(handler::edit_book_handler))
-        .route("/books/edit/:book_id", post(handler::do_edit_book_handler))
-        .route("/books/delete/:book_id", get(handler::delete_book_handler))
+        .route("/books/edit/:book_id", put(handler::do_edit_book_handler))
+        .route(
+            "/books/delete/:book_id",
+            delete(handler::delete_book_handler),
+        )
         .route("/books/list", get(handler::books_list_handler))
         .with_state(db_pool)
 }
