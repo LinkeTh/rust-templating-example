@@ -4,6 +4,7 @@ use axum::{routing::get, routing::post, Router};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::{FromRow, Pool, Postgres};
+use tower_http::cors::CorsLayer;
 
 mod db;
 mod error;
@@ -30,7 +31,8 @@ async fn main() -> anyhow::Result<()> {
         .merge(build_welcome_route(db_pool.clone()))
         .merge(build_book_routes_with_db(db_pool.clone()))
         .merge(build_book_routes())
-        .fallback(handler::handler_404);
+        .fallback(handler::handler_404)
+        .layer(CorsLayer::permissive());
 
     println!("Started on port 8080");
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())

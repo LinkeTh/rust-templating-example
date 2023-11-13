@@ -73,3 +73,21 @@ pub async fn create_pool() -> Result<DBPool, sqlx::Error> {
 
     Ok(pool)
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[tokio::test]
+    async fn my_test() {
+        let result = create_pool().await;
+        match result {
+            Ok(_r) => {
+                assert!(true);
+            }
+            Err(_e) => {
+                assert!(false);
+            }
+        }
+    }
+}

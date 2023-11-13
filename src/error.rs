@@ -1,23 +1,21 @@
 use askama::Template;
-use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::response::Response;
 
 #[derive(Template)]
 #[template(path = "error.html")]
 pub struct ErrorTemplate {
-    pub message: &'static str,
+    pub message: String,
 }
 pub struct AppError(anyhow::Error);
 
 // Tell axum how to convert `AppError` into a response.
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong: {}", self.0),
-        )
-            .into_response()
+        ErrorTemplate {
+            message: format!("Something went wrong: {}", self.0),
+        }
+        .into_response()
     }
 }
 

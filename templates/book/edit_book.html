@@ -1,24 +1,26 @@
 <h2>Edit Book</h2>
-<table>
-    <form hx-put="/books/edit/{{(book.id)}}" hx-target="#content" hx-swap="innerHTML">
-    <tr>
-        <td>Name:</td>
-        <td><input type="text" name="name" value="{{ book.name }}"/></td>
-    </tr>
-    <tr>
-        <td>Author:</td>
-        <td><input type="text" name="author" value="{{ book.author }}"/></td>
-    </tr>
-    <tr>
-        <td>Language:</td>
-        <td><input type="text" name="language" value="{{ book.language }}"/></td>
-    </tr>
-    <tr>
-        <td>Pages:</td>
-        <td><input type="text" name="pages" value="{{ book.pages }}" /></td>
-    </tr>
-    <tr>
-        <td colspan="2"><button type="submit">Send</button></td>
-    </tr>
-    </form>
-</table>
+<form hx-put="/books/edit/{{(book.id)}}" hx-target="#content" hx-swap="innerHTML">
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" name="name" value="{{ book.name }}"/></td>
+        </tr>
+        <tr>
+            <td>Author:</td>
+            <td><input type="text" name="author" value="{{ book.author }}"/></td>
+        </tr>
+        <tr>
+            <td>Language:</td>
+            <td><input type="text" name="language" value="{{ book.language }}"/></td>
+        </tr>
+        <tr>
+            <td>Pages:</td>
+            <td><input type="text" name="pages" value="{{ book.pages }}"/></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit">Send</button>
+            </td>
+        </tr>
+    </table>
+</form>
