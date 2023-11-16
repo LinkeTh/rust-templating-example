@@ -31,7 +31,7 @@ pub async fn test_db(db_pool: PgPool) -> Result<(), sqlx::Error> {
 }
 
 pub async fn find_books(db_pool: PgPool) -> Result<Vec<Book>, sqlx::Error> {
-    sqlx::query_as!(Book, "SELECT * FROM BOOK")
+    sqlx::query_as!(Book, "SELECT * FROM BOOK ORDER BY added_at DESC")
         .fetch_all(&db_pool)
         .await
 }

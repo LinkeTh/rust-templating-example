@@ -1,25 +1,93 @@
-<form hx-post="/books/new" hx-target="#content" hx-swap="innerHTML">
-    <table>
-        <tr>
-            <td>Name:</td>
-            <td><input type="text" name="name"/></td>
-        </tr>
-        <tr>
-            <td>Author:</td>
-            <td><input type="text" name="author"/></td>
-        </tr>
-        <tr>
-            <td>Language:</td>
-            <td><input type="text" name="language" value="de"/></td>
-        </tr>
-        <tr>
-            <td>Pages:</td>
-            <td><input type="text" name="pages" value="300"/></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <button type="submit">Send</button>
-            </td>
-        </tr>
-    </table>
-</form>
+<script>
+    htmx.defineExtension('bs-validation', {
+        onEvent: function (name, evt, data) {
+            console.log(name);
+
+            let form = evt.detail.elt;
+            // check if trigger attribute and submit event exists
+            // for the form
+            if(!form.hasAttribute('hx-trigger')){
+                // set trigger for custom event bs-send
+                form.setAttribute('hx-trigger','bs-send');
+                // and attach the event only once
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity()) {
+                        // trigger custom event hx-trigger="bs-send"
+                        console.log('trigger');
+                        htmx.trigger(form, "bs-send");
+                    }
+
+                    // focus the first invalide field
+                    let invalidField = form.querySelector(':invalid');
+                    if(invalidField) {
+                        invalidField.focus();
+                    }
+
+                    event.preventDefault();
+                    event.stopPropagation();
+                    console.log('prevent');
+
+                    form.classList.add('was-validated');
+                }, false)
+            }
+        }
+    });
+</script>
+<div class="container my-5">
+    <form hx-post="/books/new" hx-target="#content" hx-ext="bs-validation" hx-swap="innerHTML" class="row g-3 needs-validation" novalidate>
+        <div class="col-md-6">
+            <label for="validationCustom01" class="form-label">First name</label>
+            <input type="text"  class="form-control" id="validationCustom01" name="name" required>
+            <div class="valid-feedback">
+<!--                Looks good!-->
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="validationCustom02" class="form-label">Author</label>
+            <input type="text" class="form-control" id="validationCustom02" name="author" required>
+            <div class="valid-feedback">
+<!--                Looks good!-->
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="validationCustom03" class="form-label">Language</label>
+            <input type="text" class="form-control" id="validationCustom03" name="language" required>
+            <div class="valid-feedback">
+<!--                Looks good!-->
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="validationCustom04" class="form-label">Pages</label>
+            <input type="number" class="form-control" id="validationCustom04" name="pages" required>
+            <div class="valid-feedback">
+<!--                Looks good!-->
+            </div>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+        <!--    <table>-->
+        <!--        <tr>-->
+        <!--            <td>Name:</td>-->
+        <!--            <td><input class="form-control" type="text" name="name" required></td>-->
+        <!--        </tr>-->
+        <!--        <tr>-->
+        <!--            <td>Author:</td>-->
+        <!--            <td><input type="text" name="author"/></td>-->
+        <!--        </tr>-->
+        <!--        <tr>-->
+        <!--            <td>Language:</td>-->
+        <!--            <td><input type="text" name="language" value="de"/></td>-->
+        <!--        </tr>-->
+        <!--        <tr>-->
+        <!--            <td>Pages:</td>-->
+        <!--            <td><input type="text" name="pages" value="300"/></td>-->
+        <!--        </tr>-->
+        <!--        <tr>-->
+        <!--            <td colspan="2">-->
+        <!--                <button type="submit">Send</button>-->
+        <!--            </td>-->
+        <!--        </tr>-->
+        <!--    </table>-->
+    </form>
+</div>

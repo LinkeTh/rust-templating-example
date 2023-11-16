@@ -1,37 +1,40 @@
-<button hx-get="/books/new" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">Add Book</button>
+<button class="btn btn-primary" hx-get="/books/new" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">Add Book</button>
 
-<table>
-    <thead>
-    <tr>
-        <th>id</th>
-        <th>name</th>
-        <th>author</th>
-        <th>language</th>
-        <th>pages</th>
-        <th>added</th>
-        <th>edit</th>
-        <th>delete</th>
-    </tr>
-    </thead>
-    <tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
-    {% for book in books %}
-    <tr>
-        <script>
-            document.getElementById('added_at_{{book.id}}').innerText = new Date('{{ book.added_at.to_rfc3339() }}').toLocaleString();
-        </script>
-        <td>{{ book.id }}</td>
-        <td>{{ book.name }}</td>
-        <td>{{ book.author }}</td>
-        <td>{{ book.language }}</td>
-        <td>{{ book.pages }}</td>
-        <td id="added_at_{{book.id}}">{{ book.added_at.format("%a %b %e %T %Y") }}</td>
-        <td>
-            <button hx-get="/books/edit/{{book.id}}" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">edit</button>
-        </td>
-        <td>
-            <button hx-confirm="Are you sure?" hx-delete="/books/delete/{{book.id}}">delete</button>
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="table-content">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">name</th>
+            <th scope="col">author</th>
+            <th scope="col">language</th>
+            <th scope="col">pages</th>
+            <th scope="col">added</th>
+            <th scope="col">edit</th>
+            <th scope="col">delete</th>
+        </tr>
+        </thead>
+        <tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
+        {% for book in books %}
+        <tr>
+            <script>
+                document.getElementById('added_at_{{book.id}}').innerText = new Date('{{ book.added_at.to_rfc3339() }}').toLocaleString();
+            </script>
+            <th scope="row" title="{{book.id}}">{{ loop.index }}</th>
+            <td>{{ book.name }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.language }}</td>
+            <td>{{ book.pages }}</td>
+            <td id="added_at_{{book.id}}">{{ book.added_at.format("%a %b %e %T %Y") }}</td>
+            <td>
+                <button class="btn btn-outline-primary" hx-get="/books/edit/{{book.id}}" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">edit</button>
+            </td>
+            <td>
+                <button class="btn btn-danger" hx-confirm="Are you sure?" hx-delete="/books/delete/{{book.id}}">delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
